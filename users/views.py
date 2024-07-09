@@ -132,24 +132,73 @@ def logout(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def profile(request):
+    # Obtiene el usuario actual
+    user = request.user
+
     # Método GET para obtener el perfil
     if request.method == 'GET':
+        # Serializa los datos del usuario
+        serializer = UserSerializer(user)
+
         # Respuesta exitosa
         return Response({
             'status': 'success',
-            'message': 'Profile loaded successfully'
+            'message': 'Profile loaded successfully',
+            'data': {
+                'user': serializer.data
+            }
         }, status=status.HTTP_200_OK)
 
     # Método PUT para actualizar el perfil
     if request.method == 'PUT':
-        # Respuesta exitosa
+        # Serializa los datos enviados en la solicitud
+        serializer = UserSerializer(user, data=request.data)
+
+        # Verifica que los datos sean válidos
+        if serializer.is_valid():
+            # Actualiza el usuario
+            serializer.save()
+
+            # Hashea la contraseña del usuario
+            user.set_password(request.data['password'])
+            # Guarda el cambio
+            user.save()
+            
+            # Elimina el token viejo del usuario
+            Token.objects.filter(user=user).delete()
+
+            # Crea un nuevo token para el usuario
+            token = Token.objects.create(user=user)
+
+            # Calcula la nueva fecha de expiración del token
+            expiration = timezone.now() + timedelta(days=3)
+
+            # Respuesta exitosa
+            return Response({
+                'status': 'success',
+                'message': 'Profile updated successfully',
+                'data': {
+                    'token' : {
+                        'token_key': token.key,
+                        'token_expiration': expiration
+                    },
+                    'user': serializer.data
+                }
+            }, status=status.HTTP_201_CREATED)
+        
+        # Respuesta de error
         return Response({
-            'status': 'success',
-            'message': 'Profile updated successfully'
-        }, status=status.HTTP_200_OK)
+            'status': 'errors',
+            'message': 'Validation failed',
+            'errors': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
     
     # Método DELETE para eliminar el perfil
     if request.method == 'DELETE':
+        # Elimana el usuario
+        user.delete()
+
         # Respuesta exitosa
         return Response({
             'status': 'success',
