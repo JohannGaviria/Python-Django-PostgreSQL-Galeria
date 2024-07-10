@@ -184,7 +184,7 @@ def profile(request):
                     },
                     'user': serializer.data
                 }
-            }, status=status.HTTP_201_CREATED)
+            }, status=status.HTTP_200_OK)
         
         # Respuesta de error
         return Response({
