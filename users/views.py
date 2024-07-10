@@ -61,7 +61,7 @@ def login(request):
     # Busca al usuario que intenta iniciar sesión
     try:
         user = User.objects.get(email=email)
-    except User.DoesNotExist():
+    except User.DoesNotExist:
         # Respuesta de error
         return Response({
             'status': 'errors',
