@@ -381,3 +381,118 @@ Content-Type: application/json
 	"message": "Profile deleted successfully"
 }
 ```
+
+### Álbumes
+
+| Nombre | Método | Url | Descripción |
+|:------ | :----- | :-- | :---------- |
+| [Obtner álbumes del usuario](#obtener-álbumes-del-usuario) | `GET` | `/api/albums/` | Obtiene una lista de los álbumes del usuario. |
+| [Crear álbumes del usuario](#crear-álbumes-del-usuario) | `POST` | `/api/albums/` | Crea un nuevo álbum para el usuario. |
+
+#### Obtener álbumes del usuario
+
+##### Método HTTP
+
+```http
+GET /api/albums/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Albums loaded successfully",
+	"data": {
+		"albumes": [
+			{
+				"id": 1,
+				"name": "Family Photos",
+				"description": "Photos of my family",
+				"visibility": false,
+				"creation_date": "2024-07-11T21:27:01.499433Z",
+				"user": 1
+			},
+			{
+				"id": 2,
+				"name": "Vacation Photos",
+				"description": "Photos from my vacation",
+				"visibility": true,
+				"creation_date": "2024-07-11T21:55:02.050243Z",
+				"user": 1
+			}
+		]
+	}
+}
+```
+
+#### Crear álbumes del usuario
+
+##### Método HTTP
+
+```http
+POST /api/albums/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `name` | `string` | **Requerido**.  Nombre del álbum |
+| `description` | `string` | Descripción del álbum |
+| `visibility` | `bool` | **Requerido**.  Visibilidad del álbum |
+| `user` | `int` | **Requerido**.  ID del usuario creador del álbum |
+
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+
+{
+	"name": "Family Photos",
+	"description": "Photos of my family",
+	"visibility": false,
+	"user": 1
+}
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Album created successfully",
+	"data": {
+		"album": {
+			"id": 1,
+			"name": "Family Photos",
+			"description": "Photos of my family",
+			"visibility": false,
+			"creation_date": "2024-07-11T22:18:37.346812Z",
+			"user": 1
+		}
+	}
+}
+```
