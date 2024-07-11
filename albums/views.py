@@ -14,11 +14,11 @@ from .serializers import AlbumSerializer
 def album_list_create(request):
     # Método GET para obtener los albumes
     if request.method == 'GET':
-        try:
-            # obtiene los albumes del usuario
-            albums = Album.objects.filter(user=request.user).order_by('id')
-        except Album.DoesNotExist:
-            # Respuesta de error
+        # Intenta obtener los álbumes del usuario
+        albums = Album.objects.filter(user=request.user).order_by('id')
+
+        if not albums.exists():
+            # Si no hay álbumes, devuelve un error
             return Response({
                 'status': 'errors',
                 'message': 'Validation failed',
