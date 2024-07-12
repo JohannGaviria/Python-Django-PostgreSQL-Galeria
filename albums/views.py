@@ -71,26 +71,68 @@ def album_list_create(request):
 # Lógica para el detalle de albumes
 @api_view(['GET', 'PUT', 'DELETE'])
 @authentication_classes([TokenAuthentication])
-@permission_classes(IsAuthenticated)
+@permission_classes([IsAuthenticated])
 def album_detail(request, album_id):
+    try:
+        # Obtiene el álbum por su ID
+        album = Album.objects.get(id=album_id)
+    except Album.DoesNotExist:
+        # Respuesta de error
+        return Response({
+            'status': 'errors',
+            'message': 'Validation failed',
+            'errors': {
+                'album': [
+                    'Album not found'
+                ]
+            }
+        }, status=status.HTTP_404_NOT_FOUND)
+
     # Método GET para obtener un album
     if request.method == 'GET':
+        # Serializa los datos
+        serializer = AlbumSerializer(album)
+
         # Respuesta exitosa
         return Response({
             'status': 'success',
             'message': 'Album details loaded successfully',
+            'data': {
+                'album': serializer.data
+            }
         }, status=status.HTTP_200_OK)
     
     # Método PUT para actualizar un album
     if request.method == 'PUT':
-        # Respuesta exitosa
+        # Serializa los datos enviados en la solicitud
+        serializer = AlbumSerializer(album, data=request.data)
+
+        # Verifica que los datos son válidos
+        if serializer.is_valid():
+            # Actualiza los datos
+            serializer.save()
+
+            # Respuesta exitosa
+            return Response({
+                'status': 'success',
+                'message': 'Album updated successfully',
+                'data': {
+                    'album': serializer.data
+                }
+            }, status=status.HTTP_200_OK)
+        
+        # Respuesta de error
         return Response({
-            'status': 'success',
-            'message': 'Album updated successfully',
-        }, status=status.HTTP_200_OK)
+            'status': 'errors',
+            'message': 'Validation failed',
+            'errors': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
     
     # Método DELETE para eliminar un album
     if request.method == 'DELETE':
+        # Elimina el album
+        album.delete()
+
         # Respuesta exitosa
         return Response({
             'status': 'success',
