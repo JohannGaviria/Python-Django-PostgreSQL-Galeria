@@ -641,6 +641,7 @@ Content-Type: application/json
 |:------ | :----- | :-- | :---------- |
 | [Obtner las imagenes del usuario](#obtener-las-imagenes-del-usuario) | `GET` | `/api/images/` | Obtiene una lista de las imagenes del usuario. |
 | [Subir una nueva imagen del usuario](#subir-una-nueva-imagen-del-usuario) | `POST` | `/api/images/` | Sube una nueva imagen del usuario. |
+| [Buscar imagenes del usuario](#buscar-imagenes-del-usuario) | `GET` | `/api/images/search/?query=` | Busca las imagenes que coincidan con diferetes parámetros de busqueda. |
 
 #### Obtener las imagenes del usuario
 
@@ -765,6 +766,58 @@ Content-Type: application/json
 			"user": 1,
 			"album": 1
 		}
+	}
+}
+```
+
+#### Buscar imagenes del usuario
+
+##### Método HTTP
+
+```http
+GET /api/images/search/?query=
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `query` | `string` | Párametros de búsquedas |
+
+##### Parámetros de búsqueda
+
+- Titulo de la imagen
+- Descripción de la imagen
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Search results loaded successfully",
+	"data": {
+		"images": [
+			{
+				"id": 1,
+				"title": "First photo from the family album",
+				"description": "Photo in which the entire family appears reunited after 5 years.",
+				"image": "/uploads/images/photo_family.png",
+				"upload_date": "2024-07-16T19:45:53.974728Z",
+				"user": 1,
+				"album": 1
+			}
+		]
 	}
 }
 ```
