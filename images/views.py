@@ -3,6 +3,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Q
 from .models import Image
 from .serializers import ImageSerializer
 
@@ -143,10 +144,25 @@ def image_detail(request, image_id):
 # Lógica para buscar imagenes
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-@permission_classes(IsAuthenticated)
+@permission_classes([IsAuthenticated])
 def search_images(request):
+    # Obtiene los párametros de búsqueda
+    query = request.query_params.get('query', None)
+    
+    # Busca las imagenes que coincidan con la búsqueda
+    images = Image.objects.filter(
+        Q(title__icontains=query) |
+        Q(description__icontains=query)
+    )
+
+    # Serializa los datos de las imagenes
+    serializer = ImageSerializer(images, many=True)
+
     # Respuesta exitosa
     return Response({
         'status': 'success',
         'message': 'Search results loaded successfully',
+        'data': {
+            'images': serializer.data
+        }
     }, status=status.HTTP_200_OK)
