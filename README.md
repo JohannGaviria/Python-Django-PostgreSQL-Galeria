@@ -391,8 +391,8 @@ Content-Type: application/json
 | [Obtner álbumes del usuario](#obtener-álbumes-del-usuario) | `GET` | `/api/albums/` | Obtiene una lista de los álbumes del usuario. |
 | [Crear un nuevo álbum del usuario](#crear-álbum-del-usuario) | `POST` | `/api/albums/` | Crea un nuevo álbum del usuario. |
 | [Obtner álbum especifico del usuario](#obtener-álbum-especifco-del-usuario) | `GET` | `/api/albums/{album_id}/` | Obtiene un álbum especifico del usuario. |
-| [Actualiza álbum del usuario](#actualizar-álbum-del-usuario) | `PUT` | `/api/albums/{album_id}/` | Actualiza un álbum del usuario. |
-| [Elimanr álbum del usuario](#eliminar-álbum-del-usuario) | `DELETE` | `/api/albums/{album_id}/` | Elimina un álbum para el usuario. |
+| [Actualizar álbum del usuario](#actualizar-álbum-del-usuario) | `PUT` | `/api/albums/{album_id}/` | Actualiza un álbum del usuario. |
+| [Elimanar álbum del usuario](#eliminar-álbum-del-usuario) | `DELETE` | `/api/albums/{album_id}/` | Elimina un álbum del usuario. |
 
 #### Obtener álbumes del usuario
 
@@ -641,6 +641,10 @@ Content-Type: application/json
 |:------ | :----- | :-- | :---------- |
 | [Obtner las imagenes del usuario](#obtener-las-imagenes-del-usuario) | `GET` | `/api/images/` | Obtiene una lista de las imagenes del usuario. |
 | [Subir una nueva imagen del usuario](#subir-una-nueva-imagen-del-usuario) | `POST` | `/api/images/` | Sube una nueva imagen del usuario. |
+| [Obtner imagen especifico del usuario](#obtener-una-imagen-especifica-del-usuario) | `GET` | `/api/images/{image_id}/` | Obtiene una imagen especifico del usuario. |
+| [Actualizar imagen del usuario](#actualizar-una-imagen-del-usuario) | `PUT` | `/api/images/{image_id}/` | Actualiza una imagen del usuario. |
+| [Elimanar imagen del usuario](#eliminar-una-imagen-del-usuario) | `DELETE` | `/api/images/{image_id}/` | Elimina una imagen del usuario. |
+
 | [Buscar imagenes del usuario](#buscar-imagenes-del-usuario) | `GET` | `/api/images/search/?query=` | Busca las imagenes que coincidan con diferetes parámetros de busqueda. |
 
 #### Obtener las imagenes del usuario
@@ -767,6 +771,153 @@ Content-Type: application/json
 			"album": 1
 		}
 	}
+}
+```
+
+#### Obtener una imagen especifica del usuario
+
+##### Método HTTP
+
+```http
+GET /api/images/{image_id}/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `image_id` | `int` | **Requerido**.  ID de la imagen |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Image details loaded successfully",
+	"data": {
+		"image": {
+			"id": 1,
+			"title": "First photo from the family album",
+			"description": "Photo in which the entire family appears reunited after 5 years.",
+			"image": "/uploads/images/photo_family.png",
+			"upload_date": "2024-07-16T20:53:32.942827Z",
+			"user": 1,
+			"album": 1
+		}
+	}
+}
+```
+
+#### Actualizar una imagen del usuario
+
+##### Método HTTP
+
+```http
+PUT /api/images/{image_id}/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `image_id` | `int` | **Requerido**.  ID de la imagen |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: multipart/form-data
+Authorization: Token <token>
+
+--boundary
+Content-Disposition: form-data; name="title"
+First photo from the family album
+
+--boundary
+Content-Disposition: form-data; name="description"
+Photo in which the entire family appears reunited after 5 years.
+
+--boundary
+Content-Disposition: form-data; name="photo"; filename="photo_family_1.png"
+Content-Type: image/png
+
+--boundary
+Content-Disposition: form-data; name="user"
+1
+
+--boundary
+Content-Disposition: form-data; name="album"
+1
+
+(binary data)
+--boundary--
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Image updated successfully",
+	"data": {
+		"image": {
+			"id": 1,
+			"title": "First photo from the family album",
+			"description": "Photo in which the entire family appears reunited after 5 years.",
+			"image": "/uploads/images/photo_family_1.png",
+			"upload_date": "2024-07-16T20:53:32.942827Z",
+			"user": 1,
+			"album": 1
+		}
+	}
+}
+```
+
+#### Eliminar una imagen del usuario
+
+##### Método HTTP
+
+```http
+DELETE /api/image/{image_id}/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `image_id` | `int` | **Requerido**.  ID de la imagen |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Image deleted successfully"
 }
 ```
 
