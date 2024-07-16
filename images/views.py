@@ -71,26 +71,68 @@ def image_list_create(request):
 # Lógica para el detalle de imagenes
 @api_view(['GET', 'PUT', 'DELETE'])
 @authentication_classes([TokenAuthentication])
-@permission_classes(IsAuthenticated)
+@permission_classes([IsAuthenticated])
 def image_detail(request, image_id):
+    try:
+        # Obtiene la imagen del ID
+        image = Image.objects.get(id=image_id)
+    except Image.DoesNotExist:
+        # Respuesta de error
+        return Response({
+            'status': 'errors',
+            'message': 'Validation failed',
+            'errors': {
+                'image': [
+                    'Image not found'
+                ]
+            }
+        }, status=status.HTTP_404_NOT_FOUND)
+    
     # Método GET para obtener una imagen
     if request.method == 'GET':
+        # Serializa los datos de la imagen
+        serializer = ImageSerializer(image)
+
         # Respuesta exitosa
         return Response({
             'status': 'success',
             'message': 'Image details loaded successfully',
+            'data': {
+                'image': serializer.data
+            }
         }, status=status.HTTP_200_OK)
     
     # Método PUT para actualizar una imagen
     if request.method == 'PUT':
-        # Respuesta exitosa
+        # Serializa los datos recibidos en la solicitud
+        serializer = ImageSerializer(image, data=request.data)
+
+        # Verifica que los datos son válidos
+        if serializer.is_valid():
+            # Actualiza los datos
+            serializer.save()
+
+            # Respuesta exitosa
+            return Response({
+                'status': 'success',
+                'message': 'Image updated successfully',
+                'data': {
+                    'image': serializer.data
+                }
+            }, status=status.HTTP_200_OK)
+        
+        # Respuesta de error
         return Response({
-            'status': 'success',
-            'message': 'Image updated successfully',
-        }, status=status.HTTP_200_OK)
+            'status': 'errors',
+            'message': 'Validation failed',
+            'errors': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
     
     # Método DELETE para eliminar una imagen
     if request.method == 'DELETE':
+        # Elimina la imagen
+        image.delete()
+
         # Respuesta exitosa
         return Response({
             'status': 'success',
