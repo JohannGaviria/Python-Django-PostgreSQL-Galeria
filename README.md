@@ -9,6 +9,7 @@
 - [Endpoints](#endpoints)
     - [Usuarios](#usuarios)
 	- [Álbums](#álbumes)
+	- [Imagenes](#imagenes)
 
 ## Instalación
 
@@ -388,6 +389,7 @@ Content-Type: application/json
 | Nombre | Método | Url | Descripción |
 |:------ | :----- | :-- | :---------- |
 | [Obtner álbumes del usuario](#obtener-álbumes-del-usuario) | `GET` | `/api/albums/` | Obtiene una lista de los álbumes del usuario. |
+| [Crear un nuevo álbum del usuario](#crear-álbum-del-usuario) | `POST` | `/api/albums/` | Crea un nuevo álbum del usuario. |
 | [Obtner álbum especifico del usuario](#obtener-álbum-especifco-del-usuario) | `GET` | `/api/albums/{album_id}/` | Obtiene un álbum especifico del usuario. |
 | [Actualiza álbum del usuario](#actualizar-álbum-del-usuario) | `PUT` | `/api/albums/{album_id}/` | Actualiza un álbum del usuario. |
 | [Elimanr álbum del usuario](#eliminar-álbum-del-usuario) | `DELETE` | `/api/albums/{album_id}/` | Elimina un álbum para el usuario. |
@@ -445,7 +447,7 @@ Content-Type: application/json
 }
 ```
 
-#### Crear álbumes del usuario
+#### Crear álbum del usuario
 
 ##### Método HTTP
 
@@ -630,5 +632,139 @@ Content-Type: application/json
 {
 	"status": "success",
 	"message": "Album deleted successfully"
+}
+```
+
+### Imagenes
+
+| Nombre | Método | Url | Descripción |
+|:------ | :----- | :-- | :---------- |
+| [Obtner las imagenes del usuario](#obtener-las-imagenes-del-usuario) | `GET` | `/api/images/` | Obtiene una lista de las imagenes del usuario. |
+| [Subir una nueva imagen del usuario](#subir-una-nueva-imagen-del-usuario) | `POST` | `/api/images/` | Sube una nueva imagen del usuario. |
+
+#### Obtener las imagenes del usuario
+
+##### Método HTTP
+
+```http
+GET /api/images/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Images loaded successfully",
+	"data": {
+		"images": [
+			{
+				"id": 1,
+				"title": "First photo from the family album",
+				"description": "Photo in which the entire family appears reunited after 5 years.",
+				"image": "/uploads/images/photo_family.png",
+				"upload_date": "2024-07-16T19:45:53.974728Z",
+				"user": 1,
+				"album": 1
+			},
+			{
+				"id": 2,
+				"title": null,
+				"description": null,
+				"image": "/uploads/images/photo_random_in_paris.jpg",
+				"upload_date": "2024-07-16T19:47:02.577685Z",
+				"user": 1,
+				"album": null
+			}
+		]
+	}
+}
+```
+
+#### Subir una nueva imagen del usuario
+
+##### Método HTTP
+
+```http
+POST /api/images/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `title` | `string` | Titulo de la imagen |
+| `description` | `string` | Descripción de la imagen |
+| `image` | `file` | **Requerido**.  Archivo (jpg, png) de la imagen |
+| `user` | `int` | **Requerido**.  ID del usuario |
+| `album` | `int` | ID del álbum |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: multipart/form-data
+Authorization: Token <token>
+
+--boundary
+Content-Disposition: form-data; name="title"
+First photo from the family album
+
+--boundary
+Content-Disposition: form-data; name="description"
+Photo in which the entire family appears reunited after 5 years.
+
+--boundary
+Content-Disposition: form-data; name="photo"; filename="photo_family.png"
+Content-Type: image/png
+
+--boundary
+Content-Disposition: form-data; name="user"
+1
+
+--boundary
+Content-Disposition: form-data; name="album"
+1
+
+(binary data)
+--boundary--
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Image uploaded successfully",
+	"data": {
+		"image": {
+			"id": 1,
+			"title": "First photo from the family album",
+			"description": "Photo in which the entire family appears reunited after 5 years.",
+			"image": "/uploads/images/photo_family.png",
+			"upload_date": "2024-07-16T20:53:32.942827Z",
+			"user": 1,
+			"album": 1
+		}
+	}
 }
 ```
