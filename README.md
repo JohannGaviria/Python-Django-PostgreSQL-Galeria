@@ -8,6 +8,7 @@
 - [Uso](#uso)
 - [Endpoints](#endpoints)
     - [Usuarios](#usuarios)
+	- [Álbums](#álbumes)
 
 ## Instalación
 
