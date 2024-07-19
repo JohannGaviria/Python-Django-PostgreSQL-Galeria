@@ -10,6 +10,7 @@
     - [Usuarios](#usuarios)
 	- [Álbums](#álbumes)
 	- [Imagenes](#imagenes)
+	- [Comentarios](#comentarios)
 
 ## Instalación
 
@@ -969,6 +970,116 @@ Content-Type: application/json
 				"album": 1
 			}
 		]
+	}
+}
+```
+
+### Comentarios
+
+| Nombre | Método | Url | Descripción |
+|:------ | :----- | :-- | :---------- |
+| [Obtner los comentarios de una imagen](#obtener-los-comentarios-de-una-imagen) | `GET` | `/api/comments/{image_id}/comments/` | Obtiene una lista con los comentarios de la imagen. |
+| [Crear comentario de una imagen](#crear-un-comentario-de-una-imagen) | `POST` | `/api/comments/{image_id}/comments/` | Crea un comentario para una imagen. |
+
+#### Obtener los comentarios de una imagen
+
+##### Método HTTP
+
+```http
+GET /api/comments/{image_id}/comments/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `image_id` | `id` | **Requerido**.  ID de la imagen |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Comments loaded successfully",
+	"data": {
+		"comments": [
+			{
+				"id": 1,
+				"comment": "I like that family photo",
+				"comment_date": "2024-07-19T21:14:06.991110Z",
+				"image": 1,
+				"user": 2
+			},
+			{
+				"id": 2,
+				"comment": "It seems that they are a very united family",
+				"comment_date": "2024-07-19T21:15:09.318483Z",
+				"image": 1,
+				"user": 3
+			}
+		]
+	}
+}
+```
+
+#### Crear un comentario de una imagen
+
+##### Método HTTP
+
+```http
+POST /api/comments/{image_id}/comments/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `comment` | `string` | **Requerido**.  Comentario acerca de la imagen |
+| `image` | `int` | **Requerido**.  ID de la imagen |
+| `user` | `int` | **Requerido**.  ID del usuario |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+
+{
+	"comment": "I like that family photo",
+	"image": 1,
+	"user": 2
+}
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Comment added successfully",
+	"data": {
+		"comment": {
+			"id": 1,
+			"comment": "I like that family photo",
+			"comment_date": "2024-07-19T21:41:01.485706Z",
+			"image": 1,
+			"user": 2
+		}
 	}
 }
 ```
