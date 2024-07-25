@@ -645,7 +645,6 @@ Content-Type: application/json
 | [Obtner imagen especifico del usuario](#obtener-una-imagen-especifica-del-usuario) | `GET` | `/api/images/{image_id}/` | Obtiene una imagen especifico del usuario. |
 | [Actualizar imagen del usuario](#actualizar-una-imagen-del-usuario) | `PUT` | `/api/images/{image_id}/` | Actualiza una imagen del usuario. |
 | [Elimanar imagen del usuario](#eliminar-una-imagen-del-usuario) | `DELETE` | `/api/images/{image_id}/` | Elimina una imagen del usuario. |
-
 | [Buscar imagenes del usuario](#buscar-imagenes-del-usuario) | `GET` | `/api/images/search/?query=` | Busca las imagenes que coincidan con diferetes parámetros de busqueda. |
 
 #### Obtener las imagenes del usuario
@@ -980,6 +979,9 @@ Content-Type: application/json
 |:------ | :----- | :-- | :---------- |
 | [Obtner los comentarios de una imagen](#obtener-los-comentarios-de-una-imagen) | `GET` | `/api/comments/{image_id}/comments/` | Obtiene una lista con los comentarios de la imagen. |
 | [Crear comentario de una imagen](#crear-un-comentario-de-una-imagen) | `POST` | `/api/comments/{image_id}/comments/` | Crea un comentario para una imagen. |
+| [Obtner comentario especifico](#obtener-un-comentario-especifico) | `GET` | `/api/comments/comments/{comment_id}/` | Obtiene un comentario especifico. |
+| [Actualizar comentario especifico](#actualizar-un-comentario-especifico) | `PUT` | `/api/comments/comments/{comment_id}/` | Actualiza un comentario especifico. |
+| [Elimanar comentario de una imagen](#eliminar-un-comentario-de-una-imagen) | `DELETE` | `/api/comments/comments/{comment_id}/` | Elimina un comentario de una imagen. |
 
 #### Obtener los comentarios de una imagen
 
@@ -1081,5 +1083,134 @@ Content-Type: application/json
 			"user": 2
 		}
 	}
+}
+```
+
+#### Obtener un comentario especifico
+
+##### Método HTTP
+
+```http
+GET /api/comments/comments/{comment_id}/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `comment_id` | `int` | **Requerido**.  ID del comentario |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Comment details loaded successfully",
+	"data": {
+		"comment": {
+			"id": 1,
+			"comment": "I like that family photo",
+			"comment_date": "2024-07-19T21:41:01.485706Z",
+			"image": 1,
+			"user": 2
+		}
+	}
+}
+```
+
+#### Actualizar un comentario especifico
+
+##### Método HTTP
+
+```http
+PUT /api/comments/comments/{comment_id}/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `comment_id` | `int` | **Requerido**.  ID del comentario |
+| `comment` | `string` | **Requerido**.  Comentario acerca de la imagen |
+| `image` | `int` | **Requerido**.  ID de la imagen |
+| `user` | `int` | **Requerido**.  ID del usuario |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+
+{
+	"comment": "I like that family photo, they look very good together and happy",
+	"image": 1,
+	"user": 2
+}
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Comment updated successfully",
+	"data": {
+		"comment": {
+			"id": 1,
+			"comment": "I like that family photo, they look very good together and happy",
+			"comment_date": "2024-07-19T21:14:06.991110Z",
+			"image": 1,
+			"user": 2
+		}
+	}
+}
+```
+
+#### Eliminar un comentario de una imagen
+
+##### Método HTTP
+
+```http
+DELETE /api/comments/comments/{comment_id}/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `comment_id` | `int` | **Requerido**.  ID del comentario |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Comment deleted successfully"
 }
 ```
