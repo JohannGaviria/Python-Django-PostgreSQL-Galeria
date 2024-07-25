@@ -72,26 +72,68 @@ def comment_list_create(request, image_id):
 # Lógica para el detalle de comentarios
 @api_view(['GET', 'PUT', 'DELETE'])
 @authentication_classes([TokenAuthentication])
-@permission_classes(IsAuthenticated)
+@permission_classes([IsAuthenticated])
 def comment_detail(request, comment_id):
+    try:
+        # Obtiene el comentario del ID
+        comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+        # Respuesta de error
+        return Response({
+            'status': 'errors',
+            'message': 'Validation failed',
+            'errors': {
+                'comment': [
+                    'Comment not found'
+                ]
+            }
+        }, status=status.HTTP_400_BAD_REQUEST)
+
     # Método GET para obtener un comentario
     if request.method == 'GET':
+        # Serializa los datos del comentario
+        serializer = CommentSerializer(comment)
+
         # Respuesta exitosa
         return Response({
             'status': 'success',
             'message': 'Comment details loaded successfully',
+            'data': {
+                'comment': serializer.data
+            }
         }, status=status.HTTP_200_OK)
     
     # Método PUT para actualizar un comentario
     if request.method == 'PUT':
-        # Respuesta exitosa
+        # Serializa los datos recibidos en la solicitud
+        serializer = CommentSerializer(comment, data=request.data)
+
+        # Verifica que los datos son válidos
+        if serializer.is_valid():
+            # Actualiza los datos
+            serializer.save()
+
+            # Respuesta exitosa
+            return Response({
+                'status': 'success',
+                'message': 'Comment updated successfully',
+                'data': {
+                    'comment': serializer.data
+                }
+            }, status=status.HTTP_200_OK)
+        
+        # Respuesta de error
         return Response({
-            'status': 'success',
-            'message': 'Comment updated successfully',
-        }, status=status.HTTP_200_OK)
+            'status': 'errors',
+            'message': 'Validation failed',
+            'errors': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
     
     # Método DELETE para eliminar un comentario
     if request.method == 'DELETE':
+        # Elimina el comentario
+        comment.delete()
+        
         # Respuesta exitosa
         return Response({
             'status': 'success',
