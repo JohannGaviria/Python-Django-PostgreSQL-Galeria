@@ -11,6 +11,7 @@
 	- [Álbums](#álbumes)
 	- [Imagenes](#imagenes)
 	- [Comentarios](#comentarios)
+	- [Likes](#likes)
 
 ## Instalación
 
@@ -1212,5 +1213,107 @@ Content-Type: application/json
 {
 	"status": "success",
 	"message": "Comment deleted successfully"
+}
+```
+
+### Likes
+
+| Nombre | Método | Url | Descripción |
+|:------ | :----- | :-- | :---------- |
+| [Obtner los likes de una imagen](#obtener-los-likes-de-una-imagen) | `GET` | `/api/likes/{image_id}/likes/` | Obtiene una lista con los likes de la imagen. |
+| [Crear un like para una imagen](#crear-un-like-para-una-imagen) | `POST` | `/api/likes/{image_id}/likes/` | Crea un like para una imagen. |
+
+
+#### Obtener los likes de una imagen
+
+##### Método HTTP
+
+```http
+GET /api/likes/{image_id}/likes/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `image_id` | `int` | **Requerido**.  ID de la imagen |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Likes loaded successfully",
+	"data": {
+		"likes": [
+			{
+				"id": 1,
+				"like": true,
+				"image": 1,
+				"user": 2
+			}
+		]
+	}
+}
+```
+
+#### Crear un like para una imagen 
+
+##### Método HTTP
+
+```http
+POST /api/likes/{image_id}/likes/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `like` | `boolean` | **Requerido**.  Estado del like |
+| `image` | `int` | **Requerido**.  ID de la imagen |
+| `user` | `int` | **Requerido**.  ID del usuario |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+
+{
+	"like": true,
+	"image": 1,
+	"user": 2
+}
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Like added successfully",
+	"data": {
+		"like": {
+			"id": 1,
+			"like": true,
+			"image": 1,
+			"user": 2
+		}
+	}
 }
 ```
