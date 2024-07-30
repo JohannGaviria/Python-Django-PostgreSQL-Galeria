@@ -1,6 +1,6 @@
 # Python-Django-PostgreSQL-Galeria
 
-
+Desarrollo de una API REST que gestiona una galería de imágenes, permitiendo a los usuarios interactuar con las imágenes publicadas por otros usuarios. Las funcionalidades incluyen la capacidad de dar "likes" a las imágenes y dejar comentarios, fomentando la interacción y la participación dentro de la comunidad.
 
 ## Tabla de Contenidos
 
