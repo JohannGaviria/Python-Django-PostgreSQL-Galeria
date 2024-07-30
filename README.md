@@ -1222,6 +1222,8 @@ Content-Type: application/json
 |:------ | :----- | :-- | :---------- |
 | [Obtner los likes de una imagen](#obtener-los-likes-de-una-imagen) | `GET` | `/api/likes/{image_id}/likes/` | Obtiene una lista con los likes de la imagen. |
 | [Crear un like para una imagen](#crear-un-like-para-una-imagen) | `POST` | `/api/likes/{image_id}/likes/` | Crea un like para una imagen. |
+| [Obtner un like especifico](#obtener-un-like-especifico) | `GET` | `/api/likes/likes/{like_id}/` | Obtiene los detalles de un like. |
+| [Elimnar un like especifico](#eliminar-un-like-especifico) | `DELETE` | `/api/likes/likes/{like_id}/` | Elimnar un like especifico. |
 
 
 #### Obtener los likes de una imagen
@@ -1315,5 +1317,81 @@ Content-Type: application/json
 			"user": 2
 		}
 	}
+}
+```
+
+#### Obtener un like especifico
+
+##### Método HTTP
+
+```http
+GET /api/likes/likes/{like_id}/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `like` | `int` | **Requerido**.  ID del like |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Like details loaded successfully",
+	"data": {
+		"like": {
+			"id": 1,
+			"like": true,
+			"image": 1,
+			"user": 2
+		}
+	}
+}
+```
+
+#### Eliminar un like especifico
+
+##### Método HTTP
+
+```http
+DELETE /api/likes/likes/{like_id}/
+```
+
+##### Parámetros
+
+| Parámetro | Tipo     | Descripción                |
+| :-------- | :------- | :------------------------- |
+| `token` | `string` | **Requerido**.  Token de autenticación |
+| `like` | `int` | **Requerido**.  ID del like |
+
+##### Ejemplo de solicitud
+
+```http
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+##### Ejemplo de respuesta exitosa
+
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+
+{
+	"status": "success",
+	"message": "Like deleted successfully"
 }
 ```
