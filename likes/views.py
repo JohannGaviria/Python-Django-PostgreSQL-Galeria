@@ -72,18 +72,42 @@ def like_list_create(request, image_id):
 # Lógica para el detalle de like
 @api_view(['GET', 'DELETE'])
 @authentication_classes([TokenAuthentication])
-@permission_classes(IsAuthenticated)
+@permission_classes([IsAuthenticated])
 def like_detail(request, like_id):
+    try:
+        # Obtiene el like por su ID
+        like = Like.objects.get(id=like_id)
+    except Like.DoesNotExist:
+        # Respuesta de error
+        return Response({
+            'status': 'errors',
+            'message': 'Validation failed',
+            'errors': {
+                'like': [
+                    'Like not found'
+                ]
+            }
+        }, status=status.HTTP_404_NOT_FOUND)
+    
     # Método GET para obtener un like
     if request.method == 'GET':
+        # Serializa los datos
+        serializer = LikeSerializer(like)
+
         # Respuesta exitosa
         return Response({
             'status': 'success',
             'message': 'Like details loaded successfully',
+            'data': {
+                'like': serializer.data
+            }
         }, status=status.HTTP_200_OK)
     
     # Método DELETE para eliminar un like
     if request.method == 'DELETE':
+        # Elimina el like
+        like.delete()
+
         # Respuesta exitosa
         return Response({
             'status': 'success',
